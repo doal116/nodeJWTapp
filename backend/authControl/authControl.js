@@ -6,7 +6,6 @@ dotenv.config({ path: '../.env' });
 
 const tokenCreation = (id) => jwt.sign({ id }, process.env.JWTTOKENSECRET, { expiresIn: 3 * 24 * 60 * 60 });
 
-
 const signupGet = (req, res) => {
     res.send('<h1>signup</h1>');
 }
@@ -23,7 +22,7 @@ const signupPost = async (req, res) => {
         const token = tokenCreation(userCreation._id);
         res.cookie('jwt', token, { httpOnly: true, maxAge: 3 * 24 * 60 * 60 * 1000 })
             .status(200)
-            .json(userCreation._id);
+            .json(userCreation);
     }
 
 }
@@ -33,14 +32,17 @@ const loginPost = async (req, res) => {
     if (userLogin['errors']) {
         res.status(404).json(userLogin['errors']);
     } else {
-        const token = tokenCreation(userCreation._id);
+        const token = tokenCreation(userLogin._id);
         res.cookie('jwt', token, { httpOnly: true, maxAge: 3 * 24 * 60 * 60 * 1000 })
             .status(200)
-            .json(userLogin._id);
+            .json(userLogin);
     }
 }
-
+const logoutGet = (req, res) => {
+    res.cookie('jwt', '', { maxAge: 1 });
+    res.redirect('/');
+}
 export {
-    signupGet, loginGet,
+    signupGet, loginGet, logoutGet,
     signupPost, loginPost
 }

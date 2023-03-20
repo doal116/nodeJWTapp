@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import router from './routes/routes.js';
+import checkUser from "./routeMiddleware/checkUser.js";
 
 dotenv.config();
 
@@ -12,4 +13,5 @@ mongoose.connect(process.env.DBURI)
     .then(() => app.listen(3000))
     .catch((err) => console.log(err));
 
-app.use('/',router)
+app.get('*', checkUser);
+app.use('/', router)
